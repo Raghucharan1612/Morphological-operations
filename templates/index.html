@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Morphological Image Processor</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: linear-gradient(to right, #667eea, #764ba2);
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+        form {
+            background-color: rgba(255,255,255,0.1);
+            padding: 20px;
+            border-radius: 10px;
+            display: inline-block;
+            margin-top: 20px;
+        }
+        input, select, button {
+            padding: 8px;
+            margin: 10px;
+            border-radius: 5px;
+            border: none;
+            font-size: 16px;
+        }
+        .image-container {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            margin-top: 30px;
+        }
+        .image-container img {
+            max-width: 300px;
+            border-radius: 10px;
+            border: 3px solid white;
+        }
+        .reset-button {
+            background-color: #ff4b5c;
+            color: white;
+        }
+        .submit-button {
+            background-color: #00c9a7;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <h1>Morphological Image Processor</h1>
+
+    <form method="POST" enctype="multipart/form-data">
+        {% if not uploaded %}
+            <label>Upload Image:</label>
+            <input type="file" name="image" required>
+        {% else %}
+            <p><strong>Image loaded. You can change options below:</strong></p>
+        {% endif %}
+
+        <label>Select Operation:</label>
+        <select name="operation">
+            <option value="Erosion" {% if operation == 'Erosion' %}selected{% endif %}>Erosion</option>
+            <option value="Dilation" {% if operation == 'Dilation' %}selected{% endif %}>Dilation</option>
+            <option value="Opening" {% if operation == 'Opening' %}selected{% endif %}>Opening</option>
+            <option value="Closing" {% if operation == 'Closing' %}selected{% endif %}>Closing</option>
+            <option value="Hit" {% if operation == 'Hit' %}selected{% endif %}>Hit</option>
+            <option value="Miss" {% if operation == 'Miss' %}selected{% endif %}>Miss</option>
+        </select>
+
+
+        <label>Kernel Size:</label>
+        <input type="number" name="kernel_size" value="{{ kernel }}" min="2" max="20">
+
+        <div>
+            <button type="submit" class="submit-button">
+                {{ 'Apply Transformation' if not uploaded else 'Reapply' }}
+            </button>
+            {% if uploaded %}
+                <a href="{{ url_for('reset') }}">
+                    <button type="button" class="reset-button">Reset / Upload New Image</button>
+                </a>
+            {% endif %}
+        </div>
+    </form>
+
+    {% if uploaded and result %}
+    <div class="image-container">
+        <div>
+            <h3>Original</h3>
+            <img src="{{ original }}" alt="Original">
+        </div>
+        <div>
+            <h3>Processed</h3>
+            <img src="{{ result }}" alt="Processed">
+        </div>
+    </div>
+    {% endif %}
+</body>
+</html>
