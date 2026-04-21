@@ -70,5 +70,10 @@ def index():
                            operation=operation,
                            kernel=kernel)
 
+@app.route('/reset')
+def reset():
+    session.pop('image_path', None)
+    return redirect(url_for('index'))
+
 if __name__ == '__main__':
     app.run(debug=True)
